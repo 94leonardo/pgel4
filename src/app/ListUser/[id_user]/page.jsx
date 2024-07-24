@@ -1,33 +1,33 @@
-import React from "react";
-import axios from "axios";
+import Buttons from "./Buttons";
+import { conn } from "@/libs/mysql";
 
-async function loadUsers(userId) {
-  const { data } = await axios.get("http://localhost:3000/api/user/" + userId);
-  console.log(data);
-  return data;
+async function loadUser(id_user) {
+  try {
+    const [result] = await conn.query("SELECT * FROM user WHERE id_user = ? ", [
+      id_user,
+    ]);
+    console.log(result);
+    return result;
+  } catch (error) {
+    console.error(error);
+  }
 }
 
-async function UserPage({ params }) {
-  const users = await loadUsers(params.id_user);
+async function Userpage({ params }) {
+  const user = await loadUser(params.id_user);
+
   return (
     <section className="flex justify-center items-center">
-      <div className="p-6 bg-white">
-        <p>Nombre: {users.nombre}</p>
-        <p>Apellido: {users.apellido}</p>
-        <p>Email: {users.email}</p>
-        <p>Telefono: {users.telefono}</p>
-
-        <div className="flex gap-x-2 justify-end mt-2">
-          <button className="text-white bg-grey-500 hover:bg-grey-700 py-2 px-4 rounded">
-            Editar
-          </button>
-          <button className="text-white bg-red-500 hover:bg-red-700 py-2 px-4 rounded">
-            Eliminar
-          </button>
+      <div className="flex w-4/6 h-2/6 justify-center">
+        <div className="p-2 bg-white rounded">
+          <p className="text-slate-500 font-bold">{user.nombre}</p>
+          <p className="text-slate-700 font-bold">{user.apellido}</p>
+          <p className="text-slate-700">{user.email}</p>
+          <Buttons id_user={user.id_user} />
         </div>
       </div>
     </section>
   );
 }
 
-export default UserPage;
+export default Userpage;

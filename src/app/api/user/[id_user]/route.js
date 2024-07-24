@@ -7,13 +7,12 @@ import { User } from "@/model/user";
 //metodo para obtener un user de id de la base de datos
 export async function GET(request, { params }) {
   try {
-    console.log(params.id_user);
     //const fields = User.fields;
     const result = await conn.query(
       `SELECT * FROM ${User.table} WHERE id_user = ? `,
       [params.id_user]
     );
-    if (!result || result.length === 0) {
+    if (result.length === 0) {
       return NextResponse.json(
         {
           message: "No se encontro un user con ese id",
