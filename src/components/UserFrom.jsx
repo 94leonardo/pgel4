@@ -21,9 +21,10 @@ function UserFrom() {
 
   //funcion para manejar cambios
   const handleChange = (event) => {
-    setUser({ 
-      ...user, [event.target.name]: event.target.value
-     });
+    setUser({
+      ...user,
+      [event.target.name]: event.target.value,
+    });
   };
 
   useEffect(() => {
@@ -45,7 +46,6 @@ function UserFrom() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    
     const formData = new FormData();
     formData.append("numDocument", user.numDocument);
     formData.append("nombre", user.nombre);
@@ -53,7 +53,7 @@ function UserFrom() {
     formData.append("email", user.email);
     formData.append("password", user.password);
     formData.append("telefono", user.telefono);
-    formData.append("imagen", file);
+
     //envia peticion post
 
     if (file) {
@@ -68,6 +68,7 @@ function UserFrom() {
       });
       console.log(res);
     } else {
+      
       const res = await axios.put("/api/user/" + params.id_user, formData, {
         headers: {
           "Content-Type": "multipart/form-data",

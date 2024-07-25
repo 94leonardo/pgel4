@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { conn } from "@/libs/mysql";
 import { User } from "@/model/user";
+import cloudinary from "@/libs/cloudinary";
+import { processImagen } from "@/libs/processImagen";
+import { unlink } from "fs/promises";
 
 //rootas del baken para hacer el crud de user por id
 
@@ -75,11 +78,43 @@ export async function DELETE(request, { params }) {
 //metodo para actualizar un user de id de la base de datos
 export async function PUT(request, { params }) {
   try {
-    const data = await request.json();
+    const data = await request.formData();
+    const imagen = data.get("imagen");
+    const updateData = {
+      numDocument: data.get("numDocument"),
+      nombre: data.get("nombre"),
+      apellido: data.get("apellido"),
+      email: data.get("email"),
+      password: data.get("password"),
+      telefono: data.get("telefono"),
+    };
+    let secure_url;
+
+    if (!data.get("nombre")) {
+      return NextResponse.json(
+        {
+          message: "Nombre es requerido",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
+    if (imagen) {
+      const filePath = await processImagen(imagen);
+      const res = await cloudinary.uploader.upload(filePath);
+      updateData.imagen = res.secure_url;
+
+      if (res) {
+        await unlink(filePath);
+      }
+    }
+
     const result = await conn.query(
       `UPDATE ${User.table} SET ? WHERE id_user = ?`,
-      [data, params.id_user]
+      [updateData, params.id_user]
     );
+
     if (result.affectedRows === 0) {
       return NextResponse.json(
         {

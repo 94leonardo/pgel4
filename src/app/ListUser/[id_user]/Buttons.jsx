@@ -6,7 +6,7 @@ function Buttons({ id_user }) {
   const router = useRouter();
 
   return (
-    <div className="flex gap-x-2 justify-end mt-2">
+    <div className="flex gap-x-1 justify-end mt-4 mb-2">
       <button
         className="text-white bg-red-500 hover:bg-red-700 py-2 px-3 rounded"
         onClick={async () => {
