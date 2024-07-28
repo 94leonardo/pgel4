@@ -1,20 +1,41 @@
 import Link from "next/link";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
-function Navbar() {
+async function Navbar() {
+  const session = await getServerSession(authOptions);
+
+  console.log(session);
+
   return (
-    <nav className="bg-zinc-900 text-white py-3 mb-3 ">
-      <div className="container mx-auto flex justify-between items-center">
-        <Link href="/">
-          <h3 className=" text-3xl">Proyecto-Eventos</h3>
-        </Link>
-        <ul>
-          <li>
-            <Link href="/new" className="text-sky-500 hover:text-sky-700 ">
-              New
-            </Link>
-          </li>
-        </ul>
-      </div>
+    <nav className="flex justify-between items-center bg-gray-950 text-white px-24 py-3">
+      <Link href="/">
+        <h2 className=" text-3xl font-bold">Proyecto-Eventos</h2>
+      </Link>
+
+      <ul className="flex gap-x-2">
+        {!session?.user ? (
+          <>
+            <li>
+              <Link href="/auth/login">Login</Link>
+            </li>
+
+            <li>
+              <Link href="/auth/register">Registro</Link>
+            </li>
+          </>
+        ) : (
+          <>
+            {" "}
+            <li>
+              <Link href="/dashboard">Dashboard</Link>
+            </li>
+            <li>
+              <Link href="/api/auth/signout">LogOut</Link>
+            </li>
+          </>
+        )}
+      </ul>
     </nav>
   );
 }

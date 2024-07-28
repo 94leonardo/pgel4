@@ -1,11 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  //redireces devolver un objeto de donde va un pagina
-  redirects() {
+  async redirects() {
     return [
       {
         source: "/",
-        destination: "/ListUser",
+        destination: "/dashboard",
         permanent: true,
       },
     ];
